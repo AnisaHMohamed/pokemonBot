@@ -59,7 +59,7 @@ const states: States = {
                 Data.set('moves', pokemonMoves)
                 return;
             }
-            ).catch((e: Error) => {
+            ).catch(() => {
                 Data.set('moves', 'No Moves')
                 return;
             });
@@ -88,11 +88,15 @@ const states: States = {
         choices: ["more"]
     },
     'more': {
+        //another menu so that this menu only happens once and it is conversational
         type: StateTypes.Question,
-        text: () => "To see your pokemon type 'pokemon', To see a list of moves see type 'moves', To see your  pokemons attack type 'attack', To see a list of opponents type 'opponent' or 'goodbye' to quit!",
+        text: () => "To see your Pokemon type 'pokemon', \nTo see a list of moves see type 'moves', \nTo see your pokemons favorite attack type 'attack', \nTo see a list of opponents type 'opponent' \nor 'goodbye' to quit!",
         choices: ["pokemon", "moves", "attack", "goodbye", "opponent", "more", "favoriteattack"]
     },
     'pokemon': {
+        //if pokemon wasnt chosen should have another text however 
+        //if implemented correctly I wont need to do this as I will be forced
+        //to pick a pokemon
         type: StateTypes.Statement,
         next: "more",
         text: () => {
@@ -105,7 +109,7 @@ const states: States = {
         next: "menu",
         text: () => {
             const attack = Data.get('attack');
-            return `Your favourite attack is ${attack}, of course.`
+            return `What a pro! Your favourite attack is ${attack}!`
         }
     },
     'moves': {
@@ -122,22 +126,16 @@ const states: States = {
                 const numOfMoves = 5;
                 const pokemonMoves = [];
                 const pokemonData = response.data;
-
-
-                for (var _i = 0; _i < numOfMoves; _i++) {
+                for (let _i = 0; _i < numOfMoves; _i++) {
                     pokemonMoves.push(pokemonData.moves[_i].move.name.toLowerCase())
                 }
-
-
-
                 Data.set('moves', pokemonMoves)
                 return;
             }
-            ).catch((e: Error) => {
+            ).catch(() => {
                 Data.set('moves', 'No Moves')
                 return;
             });
-
         },
         text: () => {
             const moves = Data.get('moves');
