@@ -27,7 +27,7 @@ more <-> favoriteattack;
 const states: States = {
     'welcome': {
         type: StateTypes.Question,
-        text: () => "So you want to be a Pokémon Master! Before we begin Let's make the biggest decision of your Pokémon journey. First, Pick your starter Pokémon! Bulbasaur, Charmander or Squirtle?",
+        text: () => "So you want to be a Pokémon Master! I'm a Thinking Machine on a recorded line. Before we begin Let's make the biggest decision of your Pokémon journey. First, Pick your starter Pokémon! Bulbasaur, Charmander or Squirtle?",
         //force the choice Bulbasaur, Charmander or Squirtle
         //make a choice here to valid pokenmon
 
@@ -47,12 +47,11 @@ const states: States = {
                 method: 'GET',
                 url: pokeUrl
             };
-            //if sizeOf(moves) == 0 means empty array no moves
             await axios.request(options).then(response => {
                 const pokemonData = response.data;
                 //for each object push attack to moves for the first 5
                 const attack = []
-                const numOfMoves = 6
+                const numOfMoves = 5
                 for (let index = 0; index < numOfMoves; index++) {
                      attack.push(pokemonData[index].move.name);
                 }
@@ -100,7 +99,6 @@ const states: States = {
         }
     },
     'attack': {
-        //if no attack say no move picked
         type: StateTypes.Statement,
         next: "menu",
         text: () => {
@@ -120,12 +118,6 @@ const states: States = {
             };
             await axios.request(options).then(response => {
                 const pokemonData = response.data;
-                //for each object push attack to moves for the first 5
-                const attack = []
-                const numOfMoves = 6
-                for (let index = 0; index < numOfMoves; index++) {
-                     attack.push(pokemonData[index].move.name);
-                }
                 Data.set('moves', pokemonData.moves)
                 return;
             }
