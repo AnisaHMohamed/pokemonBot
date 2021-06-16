@@ -117,8 +117,18 @@ const states: States = {
                 url: pokeUrl
             };
             await axios.request(options).then(response => {
+                const numOfMoves = 5;
+                const pokemonMoves = [];
                 const pokemonData = response.data;
-                Data.set('moves', pokemonData.moves)
+             
+             
+                for (var _i = 0; _i < numOfMoves; _i++) {
+                        pokemonMoves.push(pokemonData.moves[_i].move.name) 
+                    }
+
+
+             
+                Data.set('moves', pokemonMoves)
                 return;
             }
             ).catch((e: Error) => {
@@ -136,13 +146,13 @@ const states: States = {
             } else {
                 for (var _i = 0; _i < numOfMoves; _i++) {
                     if (_i == 0) {
-                        finalString += moves[_i].move.name + ', '
+                        finalString += moves[_i]+ ', '
                     }
                     else if (_i < numOfMoves) {
-                        finalString += ' ' + moves[_i].move.name + ', '
+                        finalString += ' ' + moves[_i]+ ', '
                     }
                 }
-                finalString += 'and ' + moves[numOfMoves].move.name + '.'
+                finalString += 'and ' + moves[numOfMoves]+ '.'
 
             }
 
