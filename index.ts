@@ -29,8 +29,8 @@ const states: States = {
         type: StateTypes.Question,
         text: () => "So you want to be a Pokémon Master! I'm a Thinking Machine on a recorded line. Before we begin Let's make the biggest decision of your Pokémon journey. First, Pick your starter Pokémon! Bulbasaur, Charmander or Squirtle?",
         //force the choice Bulbasaur, Charmander or Squirtle
-        //make a choice here to valid pokenmon
-
+        //make a choice here to valid pokemon
+        //if valid pokemon is not chosen then reask the question
         after: (state) => {
             const starterpokemon = ['charmander', 'squirtle', 'bulbasuar']
             if (starterpokemon.includes(state.answer.toLowerCase())) {
@@ -40,6 +40,8 @@ const states: States = {
     },
     'favoriteattack': {
         type: StateTypes.Question,
+        //only make request if moves is not defined otherwise make call
+        //add a condition
         before: async () => {
             const pokemon = Data.get('pokemon')
             const pokeUrl = 'https://pokeapi.co/api/v2/pokemon/' + pokemon
@@ -48,34 +50,34 @@ const states: States = {
                 url: pokeUrl
             };
             await axios.request(options).then(response => {
+                const numOfMoves = 5;
+                const pokemonMoves = [];
                 const pokemonData = response.data;
-                //for each object push attack to moves for the first 5
-                const attack = []
-                const numOfMoves = 5
-                for (let index = 0; index < numOfMoves; index++) {
-                     attack.push(pokemonData[index].move.name);
+                for (var _i = 0; _i < numOfMoves; _i++) {
+                    pokemonMoves.push(pokemonData.moves[_i].move.name.toLowerCase())
                 }
-                Data.set('moves', pokemonData.moves)
+                Data.set('moves', pokemonMoves)
                 return;
             }
             ).catch((e: Error) => {
                 Data.set('moves', 'No Moves')
                 return;
             });
-
         },
         text: () => {
-            const moves= Data.get('moves');
+            const moves = Data.get('moves');
             let attacks = ''
             const numOfMoves = 5
             for (let index = 0; index < numOfMoves; index++) {
-                 attacks += moves[index].move.name + ', ';
+                attacks += moves[index].toLowerCase() + ', ';
             }
-
             return `Here are your attacks: ${attacks}. Which one is your favourite?`
 
         },
         after: (state) => {
+            //check if attack provided is one of the attacks in our stat
+            //if it is set attack to choosen attack otherwise there should be a repeat 
+            //due to invalid entry
             Data.set('attack', state.answer.toLowerCase());
             return
         }
@@ -83,12 +85,12 @@ const states: States = {
     'menu': {
         type: StateTypes.Question,
         text: () => "Want to find out more information about your pokemon? Type 'more' for a list of choices or 'goodbye' to quit!",
-        choices: ["pokemon", "moves", "attack", "goodbye", "opponent", "more", "favoriteattack"]
+        choices: ["more"]
     },
     'more': {
         type: StateTypes.Question,
         text: () => "To see your pokemon type 'pokemon', To see a list of moves see type 'moves', To see your  pokemons attack type 'attack', To see a list of opponents type 'opponent' or 'goodbye' to quit!",
-        choices: ["pokemon", "moves", "attack", "goodbye", "opponent", "more","favoriteattack"]
+        choices: ["pokemon", "moves", "attack", "goodbye", "opponent", "more", "favoriteattack"]
     },
     'pokemon': {
         type: StateTypes.Statement,
@@ -120,14 +122,14 @@ const states: States = {
                 const numOfMoves = 5;
                 const pokemonMoves = [];
                 const pokemonData = response.data;
-             
-             
+
+
                 for (var _i = 0; _i < numOfMoves; _i++) {
-                        pokemonMoves.push(pokemonData.moves[_i].move.name) 
-                    }
+                    pokemonMoves.push(pokemonData.moves[_i].move.name.toLowerCase())
+                }
 
 
-             
+
                 Data.set('moves', pokemonMoves)
                 return;
             }
@@ -146,13 +148,13 @@ const states: States = {
             } else {
                 for (var _i = 0; _i < numOfMoves; _i++) {
                     if (_i == 0) {
-                        finalString += moves[_i]+ ', '
+                        finalString += moves[_i] + ', '
                     }
                     else if (_i < numOfMoves) {
-                        finalString += ' ' + moves[_i]+ ', '
+                        finalString += ' ' + moves[_i] + ', '
                     }
                 }
-                finalString += 'and ' + moves[numOfMoves]+ '.'
+                finalString += 'and ' + moves[numOfMoves] + '.'
 
             }
 
