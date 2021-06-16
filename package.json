@@ -1,0 +1,28 @@
+{
+  "name": "Replicant Voice Bot Challenge",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "start": "node -r ts-node/register index.ts",
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=14"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "jssm": "^5.35.4",
+    "say": "^0.16.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.20",
+    "@types/node": "^14.14.25",
+    "jest": "^26.6.3",
+    "ts-jest": "^26.5.1"
+  }
+}
