@@ -36,7 +36,7 @@ const states: States = {
             Data.set('moves', 'No Moves');
             Data.set('favAttack', 'No Favorite Attack');
             const pokemon = state.answer.toLowerCase();
-            const starterpokemon = ['charmander', 'squirtle', 'bulbasuar']
+            const starterpokemon = ['charmander', 'squirtle', 'bulbasaur']
             if (starterpokemon.includes(pokemon)) {
                 Data.set('pokemon', pokemon);
             } 
