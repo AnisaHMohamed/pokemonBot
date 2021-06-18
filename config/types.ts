@@ -11,6 +11,7 @@ export interface State {
     choices?: string[]
     next?: string
     answer?: string
+    repeat?: Function//needed for validation
 }
 
 export interface States {

@@ -57,7 +57,7 @@ export class StateService {
         if (this.state.after) {
             await this.state.after(this.state);
         }
-     
+    
         if (this.state.next) {
             this.machine.transition(this.state.next);
         } else if (this.state.choices && this.state.choices.includes(this.state.answer.toLowerCase())) {
@@ -65,9 +65,14 @@ export class StateService {
         } else {
             this.machine.action('next');
         }
+       
 
         this.executeState()
 
     }
-
+    async transitionRepeat() {
+        if (this.state.repeat) {
+            await this.state.repeat();
+        }
+    }
 }
