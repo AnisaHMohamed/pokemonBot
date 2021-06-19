@@ -78,9 +78,10 @@ const states: States = {
             let attacks = ''
             const numOfMoves = 5
 
-            for (let index = 0; index < numOfMoves; index++) {
+            for (let index = 0; index < numOfMoves-1; index++) {
                 attacks += moves[index].toLowerCase() + ', ';
             }
+            attacks +=  'and ' + moves[numOfMoves-1]
             return `Here are your attacks: ${attacks}. Which one is your favourite?`
 
         },
@@ -181,15 +182,15 @@ const states: States = {
             if (moves == 'No Moves') {
                 finalString = 'You didn\'t pick a valid starter pokemon so you have no moves ';
             } else {
-                for (var _i = 0; _i < numOfMoves; _i++) {
+                for (var _i = 0; _i < numOfMoves-1; _i++) {
                     if (_i == 0) {
                         finalString += moves[_i] + ', ';
                     }
-                    else if (_i < numOfMoves) {
+                    else if (_i < numOfMoves-1) {
                         finalString += ' ' + moves[_i] + ', ';
                     }
                 }
-                finalString += 'and ' + moves[numOfMoves] + '.';
+                finalString += 'and ' + moves[numOfMoves-1] + '.';
             }
             return finalString
         }

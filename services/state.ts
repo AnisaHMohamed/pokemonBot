@@ -41,6 +41,9 @@ export class StateService {
             answer = await Prompt.question(phrase) as string
             Voice.stop();
             this.state.answer = answer;
+            //this may be where you need to decide whther you transition out or return
+            //then decide to repeat 
+            //else transition in?
             this.transitionOut();
         }
 
@@ -63,7 +66,7 @@ export class StateService {
         } else if (this.state.choices && this.state.choices.includes(this.state.answer.toLowerCase())) {
             this.machine.transition(this.state.answer.toLowerCase());
         } else {
-            this.machine.action('next');
+            this.machine.action('next'); 
         }
        
 
