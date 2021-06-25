@@ -21,29 +21,25 @@ export class StateService {
         this.stateName = this.machine.state();
         this.state = this.states[this.stateName];
         let answer;
-
         await this.transitionIn();
 
         const phrase = this.state.text();
         Voice.speak(phrase)
 
 
-        if (this.state.type === StateTypes.Statement){
+        if (this.state.type === StateTypes.Statement) {
             Prompt.write(phrase);
             let interval = setInterval(() => {
-                 if (!Voice.isSpeaking) {
+                if (!Voice.isSpeaking) {
                     clearInterval(interval);
                     this.transitionOut();
                 }
             }, 1000);
 
-        } else if (this.state.type === StateTypes.Question){
+        } else if (this.state.type === StateTypes.Question) {
             answer = await Prompt.question(phrase) as string
             Voice.stop();
             this.state.answer = answer;
-            //this may be where you need to decide whther you transition out or return
-            //then decide to repeat 
-            //else transition in?
             this.transitionOut();
         }
 
@@ -59,23 +55,21 @@ export class StateService {
 
         if (this.state.after) {
             await this.state.after(this.state);
+            console.log(this.state.validate,(this.state.validate == false))
+            if (this.state.validate == false) {
+                console.log(this.state.next)
+                this.machine.transition(this.state.next);
+            }
         }
-    
+
         if (this.state.next) {
             this.machine.transition(this.state.next);
         } else if (this.state.choices && this.state.choices.includes(this.state.answer.toLowerCase())) {
             this.machine.transition(this.state.answer.toLowerCase());
         } else {
-            this.machine.action('next'); 
+            this.machine.action('next');
         }
-       
-
         this.executeState()
+    }
 
-    }
-    async transitionRepeat() {
-        if (this.state.repeat) {
-            await this.state.repeat();
-        }
-    }
 }

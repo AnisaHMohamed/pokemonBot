@@ -62,10 +62,6 @@ describe('`State Service`', () => {
             State.machine.action = jest.fn()
         });
 
-        it('should run `after` if there is one', async () => {
-            await State.transitionOut()
-            expect(State.state.after).toHaveBeenCalled();
-        });
 
         it('should transition to `next` if it exists', async () => {
             State.state.next = 'next';
@@ -94,7 +90,6 @@ describe('`State Service`', () => {
     });
 
     describe('`executeState`', () => {
-
         let answer = 'executeState answer';
 
         beforeAll(() => {
@@ -137,7 +132,10 @@ describe('`State Service`', () => {
                 await State.executeState();
                 expect(State.state.answer).toBe(answer);
             });
-
+            it('should check if answer is provided', async () => {
+                await State.executeState();
+                expect(State.state.answer.length).toBeGreaterThan(1);
+            });
         });
 
         describe('for `StateTypes.Statement`', () => {

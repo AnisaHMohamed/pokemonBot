@@ -22,35 +22,36 @@ attackmenu => opponent;
 attackmenu -> goodbye;
 opponent => goodbye;
 `;
-const states: States = {
+const states = {
     'welcome': {
         type: StateTypes.Question,
-        next:'menu',
         text: () => "So you want to be a Pokémon Master! \nBefore we begin, \nLet's make the biggest decision of your Pokémon journey. \nFirst, Pick your starter Pokémon! Bulbasaur, Charmander or Squirtle?",
-        //force the choice Bulbasaur, Charmander or Squirtle
-        //make a choice here to valid pokemon
-        //if valid pokemon is not chosen then reask the question
-
         after: (state) => {
-            
             Data.set('moves', 'No Moves');
             Data.set('favAttack', 'No Favorite Attack');
             const pokemon = state.answer.toLowerCase();
             const starterpokemon = ['charmander', 'squirtle', 'bulbasaur']
+            console.log('next init')
+            state.validate = true
+
             if (starterpokemon.includes(pokemon)) {
+                state.next = 'menu';
                 Data.set('pokemon', pokemon);
-            } 
+                state.validate = true
+
+            } else {
+                state.next = 'repeat';
+                console.log('wrong value')
+                state.validate = false
+            }
         },
-        
     },
     'chooseattack': {
         type: StateTypes.Question,
-        next: 'attackmenu',
         before: async () => {
             const pokemon = Data.get('pokemon')
             const moves = Data.get('moves');
             if (moves == 'No Moves') {
-
                 const pokeUrl = 'https://pokeapi.co/api/v2/pokemon/' + pokemon
                 const options: AxiosRequestConfig = {
                     method: 'GET',
@@ -78,10 +79,10 @@ const states: States = {
             let attacks = ''
             const numOfMoves = 5
 
-            for (let index = 0; index < numOfMoves-1; index++) {
+            for (let index = 0; index < numOfMoves - 1; index++) {
                 attacks += moves[index].toLowerCase() + ', ';
             }
-            attacks +=  'and ' + moves[numOfMoves-1]
+            attacks += 'and ' + moves[numOfMoves - 1]
             return `Here are your attacks: ${attacks}. Which one is your favourite?`
 
         },
@@ -93,20 +94,25 @@ const states: States = {
             const favAttack = state.answer.toLowerCase();
             if (moves.includes(favAttack)) {
                 Data.set('favAttack', favAttack);
+                state.next = 'attackmenu';
+                state.validate = true
                 return `Great choice! ${favAttack} is a great attack`;
             }
             else {
+                state.next = 'repeat';
+                state.validate = false
                 Data.set('favAttack', 'No Favorite Attack');
             }
         }
     },
     'menu': {
         type: StateTypes.Question,
-        
+
         text: () => {
             const pokemon = Data.get('pokemon');
 
-            return `Want to find out more information about ${pokemon}? Type 'more' for a list of choices or 'goodbye' to quit!`},
+            return `Want to find out more information about ${pokemon}? Type 'more' for a list of choices or 'goodbye' to quit!`
+        },
         choices: ["more", "goodbye"]
     },
     'more': {
@@ -114,7 +120,8 @@ const states: States = {
         type: StateTypes.Question,
         text: () => {
             const pokemon = Data.get('pokemon');
-            return `Get to know your new ${pokemon}! To see the Pokemon you chose 'pokemon', \nTo see all the cool moves your new ${pokemon} can do type 'moves', \nWhen your ready to take the next step type 'chooseattack' to get ready to fight! \nor 'goodbye' to quit!`},
+            return `Get to know your new ${pokemon}! To see the Pokemon you chose 'pokemon', \nTo see all the cool moves your new ${pokemon} can do type 'moves', \nWhen your ready to take the next step type 'chooseattack' to get ready to fight! \nor 'goodbye' to quit!`
+        },
         choices: ["pokemon", "moves", "goodbye", "chooseattack"]
     },
     'attackmenu': {
@@ -124,9 +131,7 @@ const states: States = {
         choices: ["goodbye", "attack", "opponent"]
     },
     'pokemon': {
-        //if pokemon wasnt chosen should have another text however 
-        //if implemented correctly I wont need to do this as I will be forced
-        //to pick a pokemon
+
         type: StateTypes.Statement,
         next: "more",
         text: () => {
@@ -182,15 +187,15 @@ const states: States = {
             if (moves == 'No Moves') {
                 finalString = 'You didn\'t pick a valid starter pokemon so you have no moves ';
             } else {
-                for (var _i = 0; _i < numOfMoves-1; _i++) {
+                for (var _i = 0; _i < numOfMoves - 1; _i++) {
                     if (_i == 0) {
                         finalString += moves[_i] + ', ';
                     }
-                    else if (_i < numOfMoves-1) {
+                    else if (_i < numOfMoves - 1) {
                         finalString += ' ' + moves[_i] + ', ';
                     }
                 }
-                finalString += 'and ' + moves[numOfMoves-1] + '.';
+                finalString += 'and ' + moves[numOfMoves - 1] + '.';
             }
             return finalString
         }
